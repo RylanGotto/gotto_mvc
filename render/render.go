@@ -1,6 +1,7 @@
 package render
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -36,8 +37,10 @@ func (c *Render) Page(w http.ResponseWriter, r *http.Request, view string, varia
 		return c.GoPage(w, r, view, data)
 	case "jet":
 		return c.Jetpage(w, r, view, variables, data)
+	default:
+
 	}
-	return nil
+	return errors.New("no rendering engine specified")
 }
 
 func (c *Render) GoPage(w http.ResponseWriter, r *http.Request, view string, data interface{}) error {
@@ -75,7 +78,7 @@ func (c *Render) Jetpage(w http.ResponseWriter, r *http.Request, templateName st
 
 	t, err := c.JetViews.GetTemplate(fmt.Sprintf("%s.jet", templateName))
 
-	if err != err {
+	if err != nil {
 		return err
 	}
 
